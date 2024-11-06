@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cursedapple</title>
+</head>
+<body>
+    <h1>cursedapple</h1>
+    {% if patches %}
+        <ul>
+        {% for patch in patches %}
+            <li>
+                <h2>{{ patch[3] }} Update</h2>
+                <p><strong>Link:</strong> <a href="{{ patch[1] }}" target="_blank">{{ patch[1] }}</a></p>
+                <p><strong>Content:</strong> {{ patch[2]|safe }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No patches found.</p>
+    {% endif %}
+</body>
