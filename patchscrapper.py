@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
+import html
 
 database = "patch.db"
 
@@ -39,6 +40,7 @@ def patch_content(link):
         bb_wrapper = content_div.find("div", class_="bbWrapper")
         if bb_wrapper:
             content = str(bb_wrapper)
+            content = html.unescape(content)
         else:
             print(f"[patch_content] no bbWrapper found for {link}")
             return None, None

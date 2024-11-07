@@ -38,7 +38,7 @@ def scheduled_check():
 def get_patches():
     conn = sqlite3.connect(database)
     c = conn.cursor()
-    c.execute("SELECT id, link, content, timestamp FROM patches ORDER BY timestamp DESC")
+    c.execute("SELECT id, link, content, content_filtered, timestamp FROM patches ORDER BY timestamp DESC")
     patches = c.fetchall()
     conn.close()
     return patches

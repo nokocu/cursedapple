@@ -10,9 +10,11 @@
         <ul>
         {% for patch in patches %}
             <li>
-                <h2>{{ patch[3] }} Update</h2>
-                <p><strong>Link:</strong> <a href="{{ patch[1] }}" target="_blank">{{ patch[1] }}</a></p>
+                <h2>{{ patch[4] }} Update</h2>
+                <p><strong>timestamp:</strong> {{ patch[4]|safe }}</p>
+                <p><strong>Link:</strong> <a href="{{ patch[1]|safe }}" target="_blank">{{ patch[1] }}</a></p>
                 <p><strong>Content:</strong> {{ patch[2]|safe }}</p>
+                <p><strong>JSON:</strong><pre><code>{{ patch[3]|tojson|safe }}</code></pre></p>
             </li>
         {% endfor %}
         </ul>
@@ -20,3 +22,4 @@
         <p>No patches found.</p>
     {% endif %}
 </body>
+</html>
