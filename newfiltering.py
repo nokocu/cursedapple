@@ -19,7 +19,7 @@ final_structure = {
     "new": [],
     "gameplay": [],
     "fixes": [],
-    "uncategorized": []
+    "uncategorized": [],
 }
 
 with sqlite3.connect("patch.db") as conn:
@@ -130,6 +130,7 @@ def categorize(line, characters, items, final_structure):
         buff_type = buff_flag(line)
         if buff_type:
             final_structure["items"][category][item_name][buff_type].append(line)
+            final_structure[f"{category}_changes"] = "true"
         return
 
     category = uncategorized_flag(line)
@@ -152,6 +153,14 @@ def sorting(structure):
             without_numbers.sort()
             structure[key] = with_numbers + without_numbers
 
+
+def clear_empty_data(final_structure):
+    for category, item_dict in final_structure["items"].items():
+        final_structure["items"][category] = {item: value for item, value in item_dict.items() if any(value.values())}
+    final_structure["items"] = {category: item_dict for category, item_dict in final_structure["items"].items() if item_dict}
+    final_structure["heroes"] = {hero: value for hero, value in final_structure["heroes"].items() if any(value.values())}
+
+
 ########################################################################################################################
 if __name__ == "__main__":
 
@@ -169,7 +178,7 @@ if __name__ == "__main__":
                 "new": [],
                 "gameplay": [],
                 "fixes": [],
-                "uncategorized": []
+                "uncategorized": [],
             }
 
             # newfiltering -> categorize
@@ -182,6 +191,9 @@ if __name__ == "__main__":
             # newfiltering -> sort
             sorting(final_structure_copy)
 
+            # newfiltering -> clearing empty data
+            clear_empty_data(final_structure_copy)
+
             # insert filtered content back into the database
-            filtered_content = json.dumps(final_structure_copy)
-            cursor.execute("UPDATE patches SET content_filtered = ? WHERE id = ?", (filtered_content, patch_id))
+            content_filtered = json.dumps(final_structure_copy)
+            cursor.execute("UPDATE patches SET content_filtered = ? WHERE id = ?", (content_filtered, patch_id))

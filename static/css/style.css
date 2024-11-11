@@ -1,0 +1,415 @@
+:root {
+    --notwhite: #e3d8be;
+    --notwhitefaded: #9d9381;  
+    --yeswhite: #f1f1f1;
+    --border1: #656565;
+
+    --weapon: #dd9742;
+    --spirit: #ce91ff;
+    --vitality: #7cbb1e;
+
+    --buff: #6dff84;
+    --nerf: #ef786f;
+    --back: #101010;
+    --content: #141414;
+    --container: #101010;
+    --border2: #121212;
+    --padding: 10px;
+
+    --tab-on: #313131;
+    --tab-off: #222222;
+
+    --abrams: #21869e;
+    --bebop: #8e4231;
+    --dynamo: #b6a43d;
+    --geist: #2b6f53;
+    --haze: #9c5931;
+    --ivy: #a369c4;
+    --infernus: #ca4c4c;
+    --kelvin: #6797a6;
+    --krill: #60467a;
+    --lash: #434c57;
+    --mcginnis: #47699b;
+    --mirage: #907f66;
+    --paradox: #8a384c;
+    --pocket: #4d5788;
+    --seven: #c78a32;
+    --shiv: #95387c;
+    --talon: #56a178;
+    --viscous: #7caf5a;
+    --warden: #4c566a;
+    --wraith: #88476e;
+    --yamato: #658375;
+    --vindicta: #94b5d0;
+}
+  
+
+html, body {
+      /* font-family: 'Forevs', sans-serif; */
+      /* letter-spacing: 0.02em; */
+      /* font-size: 16px; */
+
+      font-family: "Stratum2", Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 16px;
+
+      /* font-family: "Noto", sans-serif; */
+      /* font-size: 13px; */
+
+      background-color: var(--back);
+      margin: 0px;
+      padding: 0px;
+      animation: fadeIn 0.3s;
+      color: var(--notwhite);
+      
+}
+
+div {
+    margin: 0px;
+    padding: 0px;
+}
+
+span {
+    display: block;
+    margin-bottom: -16px
+}
+
+
+@font-face {
+    font-family: 'Forevs';
+    src: url('/static/assets/forevsdemo-medium.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Forevs Bold';
+    src: url('/static/assets/forevsdemo-bold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Reaver';
+    src: url('/static/assets/reaver-regular.otf') format('opentype'); 
+}
+
+@font-face {
+    font-family: 'Noto';
+    src: url('/static/assets/notosanssc-regular.ttf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Stratum2';
+    src: url('/static/assets/stratum2web-regular.woff') format('woff');
+}
+
+
+
+.top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    background-color: var(--back);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url("/static/assets/oc/toppa.png");
+    background-size: 100% auto;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    
+}
+
+.head {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    width: 90%; 
+    text-align: center;
+    box-sizing: border-box;
+} 
+
+
+.head-side {
+    box-sizing: border-box;
+    padding: var(--padding);
+    display: flex;
+    align-items: center;
+} 
+
+.head-side-in {
+    padding: var(--padding);
+    display: flex;
+    white-space: nowrap; 
+}
+
+.cursedapple {
+    display: flex;
+    justify-content: center;    
+    align-items: flex-start;
+    padding-bottom: 31px;
+    padding-left:5px;
+}
+
+.top-center {
+    display: flex;
+    padding: var(--padding);
+}
+
+.top-center-in {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding);
+    white-space: nowrap; 
+    
+}
+.tabs {
+    display: block;
+    height: 56px;
+    padding: 0px 14vw;
+    padding-top: 40px;
+    border-bottom: 3px solid #313131;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.tab {
+    border-top: 2px solid var(--tab-off);
+    width: 48%;
+    background-color: var(--tab-off);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tab-on {
+    border-top: 2px solid var(--border1);
+    width: 48%;
+    background-color: var(--tab-on);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.alltabs {
+    width: 400px;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.mid {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;    
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1118px;
+    width: 100%;
+    justify-items: left;
+    position: relative;
+    text-align: left;
+    border-left: 2px solid var(--border1);
+    background-color: var(--content);
+    padding: 30px 40px;
+    margin: 40px 0px
+}
+
+.titles {
+}
+
+.hero-container {
+    border: 2px solid var(--border2);
+    background-color: var(--container);
+    display: flex;
+    padding: var(--padding);
+}
+
+.pic-hero {
+    position: relative; 
+    margin: var(--padding);
+    object-fit: contain;
+}
+
+.pic-hero img {
+    max-width: 100px;
+    object-fit: contain;
+    display: block;
+}
+
+.pic-hero img:nth-child(2) {
+    position: absolute;
+    top: 0;
+    height: 135px;
+}
+
+.hero-notes-all {
+    display: flex;
+    width: 100%;
+}
+
+.hero-notes {
+    flex: 1 1 50%;
+    padding: var(--padding);
+    box-sizing: border-box;
+    max-width: 50%;
+}
+
+.item-container {
+    border: 2px solid var(--border2);
+    background-color: var(--container);
+    display: flex;
+    padding: var(--padding);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.item {
+    box-sizing: border-box;
+    flex: 1 1 50%; 
+    display: flex;
+    padding: var(--padding);
+}
+
+.pic-item {
+    padding: var(--padding);
+} 
+
+.pic-item img {
+    max-width: 48px;
+    object-fit: contain;
+}
+
+.item-notes {
+    padding: var(--padding);
+    box-sizing: border-box;
+}
+
+
+.weapon {
+    border-left: 2px solid var(--weapon);
+}
+
+.spirit {
+    border-left: 2px solid var(--spirit);
+}
+
+.vitality {
+    border-left: 2px solid var(--vitality);
+}
+
+
+
+.cursedappletext1 {
+    font-family: 'Forevs Bold', sans-serif;
+    font-size: 59px;
+    color: var(--spirit)
+}
+
+.cursedappletext2 {
+    font-family: 'Forevs Bold', sans-serif;
+    font-size: 59px;
+}
+
+
+.centertext {
+    font-family: 'Forevs Bold', sans-serif;
+    font-size: 84px;
+}
+
+.titletext {
+    font-family: 'Forevs Bold', sans-serif;
+    font-size: 23px;
+}
+
+.datetext {
+    font-size: 15px;
+    color:var(--notwhitefaded);
+}
+
+.category {
+    font-family: 'Forevs Bold', sans-serif;
+    padding:20px;
+}
+
+.steam {
+    padding: 10px 20px;
+    margin: 10px 30px;
+    border-radius: 2px;
+    cursor: pointer;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #3281ac;
+    transition-duration: .2s;
+    color: white;
+}
+
+.steamlogo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/static/assets/game/steam.png")
+}
+
+.globelogo {
+    width: 20px;
+    height: 20px;
+    margin-right: 3px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/static/assets/game/language_notwhite.png");
+    color: var(--notwhite);
+}
+
+.nodecor {
+    text-decoration: none;
+}
+
+.debug1 {
+    border: 2px solid #00ff73;
+}
+
+.debug2 {
+    border: 2px solid #ff7b00;
+}
+
+.change {
+    padding-right: 5px;
+}
+
+.other-container {
+    border: 2px solid var(--border2);
+    background-color: var(--container);
+    display: flex;
+    padding: 30px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.hidden {
+    display: none;
+}

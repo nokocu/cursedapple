@@ -42,14 +42,14 @@ def scrap_characters():
     for tbody in tbody_elements:
         links = tbody.find_all('a', title=True)
         if len(links) >= 2:
-            character_name = links[1].get_text().strip()
+            character_name = links[1].get_text().strip().lower()
 
             abilities = tbody.find_all('div', class_='ability-icon')
             if len(abilities) >= 4:
-                ability1 = abilities[0].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'")
-                ability2 = abilities[1].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'")
-                ability3 = abilities[2].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'")
-                ability4 = abilities[3].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'")
+                ability1 = abilities[0].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'").lower()
+                ability2 = abilities[1].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'").lower()
+                ability3 = abilities[2].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'").lower()
+                ability4 = abilities[3].find('img')['src'].split('/')[-1].split('.')[0].replace('_', ' ').replace('48px-', '').replace('%27', "'").lower()
 
                 print(f"Found character: {character_name}")
                 print(f"Abilities: {ability1}, {ability2}, {ability3}, {ability4}")
