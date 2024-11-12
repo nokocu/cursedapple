@@ -1,0 +1,178 @@
+
+{% include 'head.html' %}
+<div class="tabs">
+    <div class="alltabs">
+        <a class="tab ajax-link" href="{{ url_for('patchlist') }}">
+            ALL UPDATES
+        </a>
+        <a class="tab-on">
+            PATCH NOTES
+        </a>
+    </div>
+</div>
+
+
+<div class="mid">
+    {% for patch in patches %}
+    <div class="content-container">
+
+        <div class="titles">
+            <span class="datetext">{{ patch.timestamp }}</span><br>
+            <span class="titletext">Deadlock Update {{ patch.timestamp }}</span><br>
+        </div>
+        <br>
+
+        {% for hero in patch.content_filtered['heroes'] %}
+            {% if patch.content_filtered['heroes'][hero]['buff'] or patch.content_filtered['heroes'][hero]['nerf'] or patch.content_filtered['heroes'][hero]['other'] %}
+                {% set hero_last_word = hero.split()[-1]|lower|replace('&', 'and') %}
+                    <div class="hero-container" style="border-left: 2px solid var(--{{ hero_last_word }});">
+                        <div class="pic-hero">
+                            <img src="/static/assets/game/portraits/{{ hero }}/{{ hero }}_vertical_psd.png">
+                            <img src="/static/assets/oc/fade.png">
+                        </div>
+                        <div class="hero-notes-all">
+
+                            {% if patch.content_filtered['heroes'][hero]['buff'] or patch.content_filtered['heroes'][hero]['other'] %}
+                                <div class="hero-notes buffs">
+                                    {% for buff in patch.content_filtered['heroes'][hero]['buff'] %}
+                                        <span><img class="change" src="/static/assets/up.png" width="16" height="16"> {{ buff }}</span></br>
+                                    {% endfor %}
+                                    {% for other in patch.content_filtered['heroes'][hero]['other'] %}
+                                        <span><img class="change" src="/static/assets/dot.png" height="16" height="16"> {{ other }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+
+                                <div class="hero-notes nerfs">
+                                    {% for nerf in patch.content_filtered['heroes'][hero]['nerf'] %}
+                                        <span><img class="change" src="/static/assets/down.png" width="16" height="16"> {{ nerf }}</span></br>
+                                    {% endfor %}
+                                </div>
+
+                        </div>
+                    </div><br>
+            {% endif %}
+        {% endfor %}
+
+        {% if patch.content_filtered['items']['Weapon'] %}
+            <div class="item-container weapon" id="weapon-div">
+                {% for item in patch.content_filtered['items']['Weapon'] %}
+                    {% if patch.content_filtered['items']['Weapon'][item]['buff'] or patch.content_filtered['items']['Weapon'][item]['other'] or patch.content_filtered['items']['Weapon'][item]['nerf'] %}
+                        <div class="item" id="weapon-item">
+                            <div class="pic-item"><img src="/static/assets/game/icons/weapon/{{ item|lower }}.png"></div>
+                            <div class="item-notes">
+                                {% for buff in patch.content_filtered['items']['Weapon'][item]['buff'] %}
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16">{{ buff }}</span></br>
+                                {% endfor %}
+
+                                {% for other in patch.content_filtered['items']['Weapon'][item]['other'] %}
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ other }}</span></br>
+                                {% endfor %}
+
+                                {% for nerf in patch.content_filtered['items']['Weapon'][item]['nerf'] %}
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16">{{ nerf }}</span></br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div><br>
+        {% endif %}
+
+        {% if patch.content_filtered['items']['Spirit'] %}
+            <div class="item-container spirit">
+                {% for item in patch.content_filtered['items']['Spirit'] %}
+                    {% if patch.content_filtered['items']['Spirit'][item]['buff'] or patch.content_filtered['items']['Spirit'][item]['other'] or patch.content_filtered['items']['Spirit'][item]['nerf'] %}
+                        <div class="item">
+                            <div class="pic-item"><img src="/static/assets/game/icons/spirit/{{ item|lower }}.png"></div>
+                            <div class="item-notes">
+                                {% for buff in patch.content_filtered['items']['Spirit'][item]['buff'] %}
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16">{{ buff }}</span></br>
+                                {% endfor %}
+
+                                {% for other in patch.content_filtered['items']['Spirit'][item]['other'] %}
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ other }}</span></br>
+                                {% endfor %}
+
+                                {% for nerf in patch.content_filtered['items']['Spirit'][item]['nerf'] %}
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16">{{ nerf }}</span></br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div><br>
+        {% endif %}
+
+        {% if patch.content_filtered['items']['Vitality'] %}
+            <div class="item-container vitality">
+                {% for item in patch.content_filtered['items']['Vitality'] %}
+                    {% if patch.content_filtered['items']['Vitality'][item]['buff'] or patch.content_filtered['items']['Vitality'][item]['other'] or patch.content_filtered['items']['Vitality'][item]['nerf'] %}
+                        <div class="item">
+                            <div class="pic-item"><img src="/static/assets/game/icons/vitality/{{ item|lower }}.png"></div>
+                            <div class="item-notes">
+                                {% for buff in patch.content_filtered['items']['Vitality'][item]['buff'] %}
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16">{{ buff }}</span></br>
+                                {% endfor %}
+
+                                {% for other in patch.content_filtered['items']['Vitality'][item]['other'] %}
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ other }}</span></br>
+                                {% endfor %}
+
+                                {% for nerf in patch.content_filtered['items']['Vitality'][item]['nerf'] %}
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16">{{ nerf }}</span></br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div><br>
+        {% endif %}
+
+        {% if patch.content_filtered['new'] %}
+            <div class="other-container">
+                <div class="notes">
+                {% for line in patch.content_filtered['new'] %}
+                <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
+                {% endfor %}
+                </div>
+            </div><br>
+        {% endif %}
+
+        {% if patch.content_filtered['gameplay'] %}
+            <div class="other-container">
+                <div class="notes">
+                {% for line in patch.content_filtered['gameplay'] %}
+                <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
+                {% endfor %}
+                </div>
+            </div><br>
+        {% endif %}
+
+        {% if patch.content_filtered['fixes'] %}
+            <div class="other-container">
+                <div class="notes">
+                {% for line in patch.content_filtered['fixes'] %}
+                <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
+                {% endfor %}
+                </div>
+            </div><br>
+        {% endif %}
+
+        {% if patch.content_filtered['uncategorized'] %}
+            <div class="other-container">
+                <div class="notes">
+                {% for line in patch.content_filtered['uncategorized'] %}
+                <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
+                {% endfor %}
+                </div>
+            </div><br>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+</div>
+<script src="/static/script/script.js"></script>
+</body>
+</html>

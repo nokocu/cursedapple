@@ -5,7 +5,11 @@ import re
 replacement_dict = {
     "medic shot": "restorative shot",
     "surgeof power": "surge of power",
-
+    "enchanters barrier": "enchanter's barrier",
+    "diviners kevlar": "diviner's kevlar",
+    "health nova": "healing nova",
+    "head hunter": "headhunter",
+    "quick silver reload": "quicksilver reload",
     # "bull": "abrams",
     # "nano": "calico",
     # "sumo": "dynamo",
@@ -62,9 +66,7 @@ def rename_files_in_directory(root_dir):
 
 
 # Specify the directory where you want to rename the files
-dir = 'D:/python/cursedapple/static/assets/game/icons/weapon'
-# dir = 'D:/python/cursedapple/static/assets/game/icons/spirit'
-# dir = 'D:/python/cursedapple/static/assets/game/icons/vitality'
+dir = 'D:/python/cursedapple/static/assets/game/icons'
 # dir = 'D:/python/cursedapple/static/assets/game/portraits'
 
 rename_files_in_directory(dir)

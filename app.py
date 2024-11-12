@@ -5,9 +5,12 @@ from flask import Flask, render_template
 from flask_apscheduler import APScheduler
 from updater import check_for_patch
 import sqlite3
+import logging
 
 app = Flask(__name__)
 database = "patch.db"
+log = logging.getLogger(__name__)
+log.setLevel(logging.WARNING)
 
 class Config:
     SCHEDULER_API_ENABLED = True
@@ -56,13 +59,18 @@ def get_patches():
     return patches
 
 
-@app.route('/')
-def home():
+@app.route('/notes')
+def notes():
     patches = get_patches()
-    return render_template('index.html', patches=patches)
+    return render_template('notes.html', patches=patches)
+
+@app.route('/')
+def patchlist():
+    patches = get_patches()
+    return render_template('patchlist.html', patches=patches)
 
 
 if __name__ == "__main__":
     check_for_patch()
     scheduler.start()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

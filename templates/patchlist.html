@@ -1,0 +1,31 @@
+{% include 'head.html' %}
+
+<div class="tabs">
+    <div class="alltabs">
+        <a class="tab-on">
+            ALL UPDATES
+        </a>
+        <a class="tab ajax-link" href="{{ url_for('notes') }}">
+            PATCH NOTES
+        </a>
+    </div>
+</div>
+
+<div class="mid">
+    <div class="allposts-container">
+    {% for patch in patches %}
+        <div class="post">
+            <div class="post-pic"><img src="/static/assets/thumbs/posta1.png"></div>
+            <div class="post-notes">
+                <span class="post-date-text">{{ patch.timestamp }}</span><br>
+                <span class="post-title-text">Patchnotes for {{ patch.timestamp }}</span><br>
+                <span class="post-info-text">(61) Hero changes, (31) Weapon changes, and (100) other!</span><br>
+                <span class="post-read-text">READ MORE<img class="post-read-arrow" src="/static/assets/arrow_right.png"></span><br>
+            </div>
+        </div>
+        <div class="post-divider">
+
+        </div>
+    {% endfor %}
+</div>
+

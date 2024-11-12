@@ -11,19 +11,18 @@ def init_db():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT,
                     category TEXT,
-                    price TEXT,
-                    icon_link TEXT
+                    price TEXT
                  )''')
     conn.commit()
     conn.close()
 
 
-def save_item(name, category, price, icon_link):
+def save_item(name, category, price):
     conn = sqlite3.connect("patch.db")
     c = conn.cursor()
 
-    c.execute("INSERT INTO items (name, category, price, icon_link) VALUES (?, ?, ?, ?)",
-              (name, category, price, icon_link))
+    c.execute("INSERT INTO items (name, category, price) VALUES (?, ?, ?)",
+              (name, category, price))
     conn.commit()
     conn.close()
 
@@ -52,10 +51,8 @@ def scrap_items():
         for item in items:
             try:
                 price = item.find_all("tr")[0].get_text(strip=True)
-                img_tag = item.find_all("tr")[1].find("img")
-                icon_link = "https://deadlocked.wiki" + img_tag["src"] if img_tag else None
                 name = item.find_all("tr")[2].get_text(strip=True)
-                save_item(name, category, price, icon_link)
+                save_item(name, category, price)
                 print(f"[INFO] Saved item: {name} (Category: {category})")
             except Exception as e:
                 print(f"[ERROR] Failed to process item: {e}")

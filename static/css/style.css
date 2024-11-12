@@ -73,6 +73,10 @@ span {
     margin-bottom: -16px
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
 @font-face {
     font-family: 'Forevs';
@@ -97,6 +101,11 @@ span {
 @font-face {
     font-family: 'Stratum2';
     src: url('/static/assets/stratum2web-regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Stratum2 Bold';
+    src: url('/static/assets/stratum2web-bold.woff') format('woff');
 }
 
 
@@ -158,6 +167,23 @@ span {
     padding-left:5px;
 }
 
+.cursedapple:hover .cursedappletext1 {
+    color: var(--notwhite);
+}
+
+.cursedapple:hover .cursedappletext2 {
+    color: var(--spirit);
+}
+
+.cursedappletext2 {
+    font-family: 'Forevs Bold', sans-serif;
+    font-size: 59px;
+}
+
+.appa {
+
+}
+
 .top-center {
     display: flex;
     padding: var(--padding);
@@ -173,7 +199,7 @@ span {
 }
 .tabs {
     display: block;
-    height: 56px;
+    height: 57px;
     padding: 0px 14vw;
     padding-top: 40px;
     border-bottom: 3px solid #313131;
@@ -288,6 +314,7 @@ span {
     flex: 1 1 50%; 
     display: flex;
     padding: var(--padding);
+    border-top: 2px solid var(--border2);
 }
 
 .pic-item {
@@ -322,12 +349,14 @@ span {
 .cursedappletext1 {
     font-family: 'Forevs Bold', sans-serif;
     font-size: 59px;
-    color: var(--spirit)
+    color: var(--spirit);
+    transition-duration: 0.2s;
 }
 
 .cursedappletext2 {
     font-family: 'Forevs Bold', sans-serif;
     font-size: 59px;
+    transition-duration: 0.2s;
 }
 
 
@@ -349,6 +378,13 @@ span {
 .category {
     font-family: 'Forevs Bold', sans-serif;
     padding:20px;
+    transition-duration: .1s;
+}
+
+.category:hover {
+    font-family: 'Forevs Bold', sans-serif;
+    padding:20px;
+    color: var(--spirit);
 }
 
 .steam {
@@ -366,13 +402,18 @@ span {
     color: white;
 }
 
+
+.steam:hover {
+    background-color: var(--spirit);
+}
+
 .steamlogo {
     width: 20px;
     height: 20px;
     margin-right: 10px;
     background-size: contain;
     background-repeat: no-repeat;
-    background-image: url("/static/assets/game/steam.png")
+    background-image: url("/static/assets/steam.png")
 }
 
 .globelogo {
@@ -381,13 +422,10 @@ span {
     margin-right: 3px;
     background-size: contain;
     background-repeat: no-repeat;
-    background-image: url("/static/assets/game/language_notwhite.png");
+    background-image: url("/static/assets/language.png");
     color: var(--notwhite);
 }
 
-.nodecor {
-    text-decoration: none;
-}
 
 .debug1 {
     border: 2px solid #00ff73;
@@ -412,4 +450,129 @@ span {
 
 .hidden {
     display: none;
+}
+
+.buffs {
+    border-top: 2px solid #1f2720;
+}
+
+.nerfs {
+    border-top: 2px solid #2b1313;
+}
+
+.post {
+    width: 100%;
+    height: 275px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    transition-property: filter, transform, background-size, opacity;
+    transition-duration: .2s;
+    transition-timing-function: ease-in-out;
+}
+
+.post:hover {
+    transform: scale(1.05);
+}
+
+.post-pic {
+    position: relative;
+    object-fit: contain;
+}
+
+.post-pic img {
+    max-width: 464px;
+    object-fit: contain;
+    display: block;
+}
+
+.allposts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    width: 100%;
+    justify-items: left;
+    position: relative;
+    text-align: left;
+    padding-top: 57px;
+}
+
+.post-date-text {
+    font-family: 'Stratum2', sans-serif;
+    font-size: 14px;
+    padding-bottom: 2px;
+    letter-spacing: 2px;
+    color: var(--notwhitefaded);
+}
+
+.post-title-text {
+    font-family: 'Stratum2', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 0px;
+}
+
+.post-info-text {
+    font-family: 'Stratum2', sans-serif;
+    font-size: 20px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    color: var(--notwhitefaded);
+}
+
+.post-read-text {
+    font-family: 'Stratum2', sans-serif;
+    font-size: 18px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    display: flex;
+
+}
+
+.post-read-text:hover {
+    color: var(--spirit);
+    transition-duration: .1s;
+    
+}
+
+.post-read-text:hover .post-read-arrow {
+    padding-left: 5px;
+}
+
+.post-read-arrow {
+    transition-duration: .2s;
+    padding-top: 2px;
+}
+
+
+.post-read-text img {
+    max-width:16px;
+    max-height:16px;
+}
+
+.post-notes {
+    font-family: 'Stratum2', sans-serif;
+    /* margin-top: 20px; */
+    margin-left: 40px;
+    margin-bottom: 15px;
+}
+
+.post-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #ffffff20;
+    margin: 30px 0px;
 }
