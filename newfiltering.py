@@ -65,6 +65,8 @@ def categorize(line, characters, items, final_structure, force_category=None):
                 if mistyped.lower() in line_lower:
                     line_lower = line_lower.replace(mistyped.lower(), correct)
 
+
+
         # check for "item:" format first
         for category, item_list in items.items():
             for item in item_list:
@@ -74,6 +76,9 @@ def categorize(line, characters, items, final_structure, force_category=None):
 
         # check for "hero:" format second
         for hero in characters:
+            # handle cases like "you are perfection, Haze"
+            if f'{hero}"' in line.lower() or f'"{hero}' in line.lower():
+                return None
             if f"{hero}:" in line_lower:
                 return "hero", hero  # Return hero name
 
@@ -201,7 +206,6 @@ def notes_to_json(id, conn):
         temporary_list: []
 
         for line in content[0].splitlines():
-            print(line)
             stripped_line = re.sub(r'<.*?>', '', line).strip().replace("- ", "")
 
             if stripped_line.endswith(".mp4"):
