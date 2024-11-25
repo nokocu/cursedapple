@@ -17,14 +17,10 @@ items = {
 }
 
 final_structure = {
-    "heroes": {},
-    "items": {"Weapon": {}, "Spirit": {}, "Vitality": {}},
-    "new": [],
-    "gameplay": [],
-    "fixes": [],
-    "uncategorized": [],
-    "gallery": [],
-    "hidden": []
+    "[ Heroes ]": {},
+    "[ Items ]": {"Weapon": {}, "Spirit": {}, "Vitality": {}},
+    "[ Gallery ]": [],
+    "[ Hidden ]": []
 }
 
 with sqlite3.connect("patch.db") as conn:
@@ -34,7 +30,7 @@ with sqlite3.connect("patch.db") as conn:
     cursor.execute("SELECT name FROM characters")
     characters.extend([hero_name for (hero_name,) in cursor.fetchall()])
     for hero in characters:
-        final_structure["heroes"][hero] = {"buff": [], "nerf": [], "other": []}
+        final_structure["[ Heroes ]"][hero] = {"buff": [], "nerf": [], "other": []}
 
     # get items
     cursor.execute("SELECT name, category FROM items")
@@ -44,7 +40,7 @@ with sqlite3.connect("patch.db") as conn:
         items[category].append(item_name)
     for category, item_list in items.items():
         for item in item_list:
-            final_structure["items"][category][item] = {"buff": [], "nerf": [], "other": []}
+            final_structure["[ Items ]"][category][item] = {"buff": [], "nerf": [], "other": []}
 
     # get abilites
     cursor.execute(""" SELECT name, ability1, ability2, ability3, ability4 FROM characters """)
@@ -58,58 +54,48 @@ with sqlite3.connect("patch.db") as conn:
 
 def categorize(line, characters, items, final_structure, force_category=None):
 
-    # gallery
-    def gallery_flag(line):
-        href_pattern = r'src="([^"]+)"'
-        href_match = re.search(href_pattern, line)
-        if href_match:
-            url = href_match.group(1)
-            return url
-        else:
-            return None
-
-    # hero flag (prioritize the "hero:" format, ignore hero labs)
-    def hero_flag(line, characters, char_abilities):
-        ignore_words = ["hero labs"]
+    def item_or_hero_flag(line, characters, char_abilities, items):
+        ignore_words = ["long range", "hero labs"]
+        mistyped_dict = {"knockdown": {"Knock Down"}}
         line_lower = line.lower()
 
-        # hero names
-        for hero in characters:
-            # ignore word list
-            if any(word in line.lower() for word in ignore_words):
-                return None
-            # ignore mentions like "you are perfection, Haze"
-            elif f'{hero}"' in line_lower or f'"{hero}' in line_lower:
-                return None
-            elif f"{hero}:" in line_lower:
-                return hero
-            elif hero in line_lower:
-                return hero
+        # handle mistyped items
+        for correct, mistyped_list in mistyped_dict.items():
+            for mistyped in mistyped_list:
+                if mistyped.lower() in line_lower:
+                    line_lower = line_lower.replace(mistyped.lower(), correct)
 
-        # ability names
-        for hero, abilities in char_abilities.items():
-            for ability in abilities:
-                if ability.lower() in line_lower:
-                    return hero
-
-        return None
-
-    # item flag (prioritize the "item:" format, then ignore item names that may be used in normal sentence)
-    def item_flag(line, items):
-        ignore_words = ["long range"]
-
-        line_lower = line.lower()
+        # check for "item:" format first
         for category, item_list in items.items():
             for item in item_list:
                 item_lower = item.lower()
                 if f"{item_lower}:" in line_lower:
-                    return category, item
+                    return "item", category, item  # Return item category and name
 
+        # check for "hero:" format second
+        for hero in characters:
+            if f"{hero}:" in line_lower:
+                return "hero", hero  # Return hero name
+
+        # check for general item mentions
         for category, item_list in items.items():
             for item in item_list:
                 item_lower = item.lower()
                 if item_lower in line_lower and not any(ignore_word in line_lower for ignore_word in ignore_words):
-                    return category, item
+                    return "item", category, item  # Return item category and name
+
+        # check for general hero mentions
+        for hero in characters:
+            if hero in line_lower and not any(word in line_lower for word in ignore_words):
+                return "hero", hero  # Return hero name
+
+        # check for hero abilities at the end
+        for hero, abilities in char_abilities.items():
+            for ability in abilities:
+                if ability is None:
+                    continue
+                if ability.lower() in line_lower:
+                    return "hero", hero
 
         return None
 
@@ -145,75 +131,36 @@ def categorize(line, characters, items, final_structure, force_category=None):
         else:
             return "other"
 
-    # if not a hero or item related line
-    def uncategorized_flag(line):
-        fixes_words = ["fixed"]
-        gameplay_words = [
-                            "walker", "guardian", "shrine", "patron",
-                            "souls", "urn", "mid boss", "trooper", "creep", "sinner's sacrifice", "camps", "breakables",
-                            "respawn", "parry", "melee",
-                            "stair", "lane", "hallway", "bounce pad", "traversal", "zipline", "bridge",
-                            "backdoor", "spawn", "building", "rooftops", "interior", "chimney", "roof", "zap",
-                            "sinners sacrifice", "comeback"
-                          ]
-        new_words = ["added", "updated"]
-        ignore_words = ["View attachment"]
-
-        first_word = line.lower().split()[0] if line.strip() else ""
-        if first_word in fixes_words:
-            return "fixes"
-        elif line.endswith(".mp4"):
-            return "hidden"
-        elif any(word in line.lower() for word in gameplay_words):
-            return "gameplay"
-        elif any(word in line.lower() for word in new_words):
-            return "new"
-        else:
-            return "uncategorized"
-
     # main categorizing logic
-    # nested statements
-    if force_category:
-        final_structure[force_category].append(line)
-        return
-    elif line.endswith(":"):
-        line = line[:-1]
+    result = item_or_hero_flag(line, characters, char_abilities, items)
+    if result:
+        if result[0] == "item":
+            category, item_name = result[1], result[2]
+            buff_type = buff_flag(line)
+            if buff_type:
+                final_structure["[ Items ]"][category][item_name][buff_type].append(line)
+            return
 
-    # gallery
-    gallery_flag = gallery_flag(line)
-    if gallery_flag:
-        final_structure["gallery"].append(gallery_flag)
-        return
-
-    # hero
-    hero = hero_flag(line, characters, char_abilities)
-    if hero:
-        buff_type = buff_flag(line)
-        if buff_type:
-            final_structure["heroes"][hero][buff_type].append(line)
-        return
-
-    # item
-    item = item_flag(line, items)
-    if item:
-        category, item_name = item
-        buff_type = buff_flag(line)
-        if buff_type:
-            final_structure["items"][category][item_name][buff_type].append(line)
-            final_structure[f"{category}_changes"] = "true"
-        return
+        elif result[0] == "hero":
+            hero_name = result[1]
+            buff_type = buff_flag(line)
+            if buff_type:
+                final_structure["[ Heroes ]"][hero_name][buff_type].append(line)
+            return
 
     # other
-    category = uncategorized_flag(line)
-    final_structure[category].append(line)
+    if force_category not in final_structure:
+        final_structure[force_category] = []
+    final_structure[force_category].append(line)
+
+
 
 
 # filter & sort ########################################################################################################
 
-# if under hero or items, sort alphabeticaly but prioritize lines with values, elsewhere just alphabeticaly
 def sorting(structure):
     for key, value in structure.items():
-        if key in ['new', 'gameplay', 'fixes', 'uncategorized'] and isinstance(value, list):
+        if key not in ["[ Heroes ]", "[ Vitality Items ]", "[ Weapon Items ]", "[ Spirit Items ]", "[ Hero Changes ]"] and isinstance(value, list):
             structure[key] = sorted(value)
         elif isinstance(value, dict):
             sorting(value)
@@ -224,12 +171,11 @@ def sorting(structure):
             without_numbers.sort()
             structure[key] = with_numbers + without_numbers
 
-
 def clear_empty_data(final_structure):
-    for category, item_dict in final_structure["items"].items():
-        final_structure["items"][category] = {item: value for item, value in item_dict.items() if any(value.values())}
-    final_structure["items"] = {category: item_dict for category, item_dict in final_structure["items"].items() if item_dict}
-    final_structure["heroes"] = {hero: value for hero, value in final_structure["heroes"].items() if any(value.values())}
+    for category, item_dict in final_structure["[ Items ]"].items():
+        final_structure["[ Items ]"][category] = {item: value for item, value in item_dict.items() if any(value.values())}
+    final_structure["[ Items ]"] = {category: item_dict for category, item_dict in final_structure["[ Items ]"].items() if item_dict}
+    final_structure["[ Heroes ]"] = {hero: value for hero, value in final_structure["[ Heroes ]"].items() if any(value.values())}
 
 
 # final ################################################################################################################
@@ -243,52 +189,65 @@ def notes_to_json(id, conn):
 
     if content:
         final_structure_copy = {
-            "heroes": {hero: {"buff": [], "nerf": [], "other": []} for hero in characters},
-            "items": {category: {item: {"buff": [], "nerf": [], "other": []} for item in item_list} for
+            "[ Heroes ]": {hero: {"buff": [], "nerf": [], "other": []} for hero in characters},
+            "[ Items ]": {category: {item: {"buff": [], "nerf": [], "other": []} for item in item_list} for
                       category, item_list in items.items()},
-            "new": [], "gameplay": [], "fixes": [], "uncategorized": [], "gallery": [], "hidden": []
+            "[ Gallery ]": [], "[ Hidden ]": []
         }
 
         # categorize (exceptions for image and nested note)
         last_line = None
         last_category = None
         temporary_list: []
-        for line in content[0].splitlines():
 
-            # when image src
-            if 'src' in line:
-                categorize(line, characters, items, final_structure_copy)
+        for line in content[0].splitlines():
+            print(line)
+            stripped_line = re.sub(r'<.*?>', '', line).strip().replace("- ", "")
+
+            if stripped_line.endswith(".mp4"):
+                categorize(stripped_line, characters, items, final_structure_copy, force_category="[ Hidden ]")
                 continue
 
-            # when nested statements with margin
-            elif '<div style="margin-left: 20px">' in line:
-                for chunk in line.split('<div style="margin-left: 20px">'):
+            # Check if its the category
+            elif stripped_line.startswith("[") and stripped_line.endswith("]"):
+                last_category = stripped_line
+                continue
 
+            elif '<div style="margin-left: 20px">' in line:
+                if not last_line.endswith(":"):
+                    last_line = last_line + ": "
+                last_category_temp = last_category if last_category is not None else "[ General Changes ]"
+                for chunk in line.split('<div style="margin-left: 20px">'):
                     if not chunk.strip():
                         continue
 
                     chunk = re.sub(r'<.*?>', '', chunk).strip()
-                    chunk = chunk.replace("- ", f"{last_line} ").replace("- ", "")
+                    chunk = chunk.replace("- ", f"{last_line} ")
 
-                    categorize(chunk, characters, items, final_structure_copy, force_category="uncategorized")
+                    categorize(chunk, characters, items, final_structure_copy, force_category=last_category_temp)
+                continue
 
-            # when nested statements without margin
-            elif re.sub(r'<.*?>', '', line).strip().startswith('['):
-                line = re.sub(r'<.*?>', '', line).strip().replace("- ", "")
-                last_category = re.sub(r"[\[\]]", "", line).strip()
-
-            else:
-                line = re.sub(r'<.*?>', '', line).strip()
-                if not line.startswith('-') and line != "":
-                    if last_category:
-                        line = last_category + ": " + line
-                        categorize(line, characters, items, final_structure_copy, force_category="uncategorized")
-                        continue
-                elif line == "":
+            # Check if line has any image src
+            elif 'src' in line:
+                src_pattern = r'src="([^"]+)"'
+                src_match = re.search(src_pattern, line)
+                if src_match:
+                    line = src_match.group(1)
+                    categorize(line, characters, items, final_structure_copy, force_category="[ Gallery ]")
                     continue
 
-                categorize(line.replace("- ", ""), characters, items, final_structure_copy)
-                last_line = line
+            # If line ends with ":", remove it
+            elif stripped_line.endswith(":"):
+                stripped_line = stripped_line[:-1]
+
+            # Ignore empty lines
+            elif stripped_line == "":
+                continue
+
+            # Categorize the line (use last_category or default to "[ OTHER ]")
+            last_category_temp = last_category if last_category is not None else "[ General Changes ]"
+            categorize(stripped_line, characters, items, final_structure_copy, force_category=last_category_temp)
+            last_line = re.sub(r'<.*?>', '', line).strip().replace("- ", "")
 
         # sort
         sorting(final_structure_copy)

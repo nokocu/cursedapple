@@ -28,37 +28,24 @@
                     <span class="post-title-text">Patchnotes for <b>{{ patch.date | titledate }}</b></span><br>
 
 
-                    {% if patch.content_filtered['heroes'] | length > 0 %}
+                    {% if patch.content_filtered['[ Heroes ]'] | length > 0 %}
                         <span class="post-info-text">
                             <img class="change" src="/static/assets/hero2.png" height="16" height="16">
-                            <b>{{ patch.content_filtered['heroes'] | length }}</b>
+                            <b>{{ patch.content_filtered['[ Heroes ]'] | length }}</b>
                             Heroes
                         </span>
                     {% endif %}
 
                     {% set item_changes =
-                        (patch.content_filtered['items'].get('Weapon', []) | length) +
-                        (patch.content_filtered['items'].get('Spirit', []) | length) +
-                        (patch.content_filtered['items'].get('Vitality', []) | length) %}
+                        (patch.content_filtered['[ Items ]'].get('Weapon', []) | length) +
+                        (patch.content_filtered['[ Items ]'].get('Spirit', []) | length) +
+                        (patch.content_filtered['[ Items ]'].get('Vitality', []) | length) %}
 
                     {% if item_changes > 0 %}
                          <span class="post-info-text">
                              <img class="change" src="/static/assets/item.png" height="16" height="16">
                              <b>{{ item_changes }}</b> Items
                          </span>
-                    {% endif %}
-
-                    {% set other_changes =
-                        (patch.content_filtered['new'] | length) +
-                        (patch.content_filtered['gameplay'] | length) +
-                        (patch.content_filtered['fixes'] | length) +
-                        (patch.content_filtered['uncategorized'] | length) %}
-
-                    {% if other_changes > 0 %}
-                        <span class="post-info-text">
-                            <img class="change" src="/static/assets/dot.png" height="16" height="16">
-                            <b>{{ other_changes }}</b> Other
-                        </span>
                     {% endif %}
                 <br>
 

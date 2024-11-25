@@ -86,16 +86,16 @@ def get_patch_by_id(patch_id):
 @app.route('/')
 def home():
     patches = get_patches()
-    return render_template('patchlist.html', patches=patches[0], newest=patches[1])
+    return render_template('index.html', patches=patches[0], newest=patches[1])
 
 @app.route('/patchnote/<int:id>')
 def notes(id):
     patch = get_patch_by_id(id)
     if patch:
-        return render_template('notes.html', patch=patch[0], newest=patch[1])
+        return render_template('post.html', patch=patch[0], newest=patch[1])
     else:
         patches = get_patches()
-        return render_template('patchlist.html', patches=patches[0], newest=patches[1])
+        return render_template('index.html', patches=patches[0], newest=patches[1])
 
 # time
 app.config['BABEL_DEFAULT_LOCALE'] = 'en'

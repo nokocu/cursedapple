@@ -276,8 +276,6 @@ a {
 }
 
 .pic-hero img:nth-child(1) {
-    max-width: 100px;
-    min-height: 130px;
     object-fit: contain;
     display: block;
 }
@@ -285,8 +283,7 @@ a {
 .pic-hero img:nth-child(2) {
     position: absolute;
     top: 0;
-    max-width: 100px;
-    min-height: 130px;
+
 }
 
 .hero-notes-all {
@@ -456,6 +453,10 @@ a {
     position: relative;
 }
 
+.other-container span {
+    margin-bottom: -13px;
+}
+
 .hidden {
     display: none;
 }
@@ -614,12 +615,12 @@ a {
 
 .pic-hero span {
     font-family: 'Forevs Bold', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     text-shadow: 2px 2px 5px var(--shadow);
     justify-content: center;
     display: flex;
     position: absolute;
-    top: 120px;
+    top: 110px;
     width: 100%;
 }
 
@@ -728,5 +729,17 @@ a {
 .galleryinfo {
     display: flex;
     color: var(--notwhitefaded);
+}
+
+.weaponfilter {
+    filter: invert(0.4) sepia(1) hue-rotate(340deg) saturate(350%);
+}
+
+.vitalityfilter {
+    filter: invert(0.4) sepia(1) hue-rotate(30deg) saturate(600%)
+}
+
+.spiritfilter {
+    filter: invert(0.4) sepia(1) hue-rotate(210deg) saturate(700%);
 }
 
