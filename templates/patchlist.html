@@ -5,8 +5,8 @@
         <a class="tab-on">
             ALL UPDATES
         </a>
-        <a class="tab ajax-link" href="{{ url_for('notes') }}">
-            PATCH NOTES
+        <a class="tab ajax-link" href="{{ url_for('notes', id=newest.id) }}">
+            NEWEST
         </a>
     </div>
 </div>
@@ -14,18 +14,63 @@
 <div class="mid">
     <div class="allposts-container">
     {% for patch in patches %}
-        <div class="post">
-            <div class="post-pic"><img src="/static/assets/thumbs/posta1.png"></div>
-            <div class="post-notes">
-                <span class="post-date-text">{{ patch.timestamp }}</span><br>
-                <span class="post-title-text">Patchnotes for {{ patch.timestamp }}</span><br>
-                <span class="post-info-text">(61) Hero changes, (31) Weapon changes, and (100) other!</span><br>
-                <span class="post-read-text">READ MORE<img class="post-read-arrow" src="/static/assets/arrow_right.png"></span><br>
-            </div>
-        </div>
-        <div class="post-divider">
+        <a href="{{ url_for('notes', id=patch.id) }}">
+            <div class="post">
+                <div class="post-pic">
+                    <img src="/static/assets/thumbs/posta{{ patch.id % 10 }}.png">
+                    <div class="post-pic-lines">
+                        <span class="post-pic-text-a">{{ patch.date | titlepic_eu }}</span>
+                        <span class="post-pic-text-b">UPDATE</span>
+                    </div>
+                </div>
+                <div class="post-notes">
+                    <span class="post-date-text">Posted {{ patch.timestamp | datetime_us }}</span><br>
+                    <span class="post-title-text">Patchnotes for <b>{{ patch.date | titledate }}</b></span><br>
 
-        </div>
+
+                    {% if patch.content_filtered['heroes'] | length > 0 %}
+                        <span class="post-info-text">
+                            <img class="change" src="/static/assets/hero2.png" height="16" height="16">
+                            <b>{{ patch.content_filtered['heroes'] | length }}</b>
+                            Heroes
+                        </span>
+                    {% endif %}
+
+                    {% set item_changes =
+                        (patch.content_filtered['items'].get('Weapon', []) | length) +
+                        (patch.content_filtered['items'].get('Spirit', []) | length) +
+                        (patch.content_filtered['items'].get('Vitality', []) | length) %}
+
+                    {% if item_changes > 0 %}
+                         <span class="post-info-text">
+                             <img class="change" src="/static/assets/item.png" height="16" height="16">
+                             <b>{{ item_changes }}</b> Items
+                         </span>
+                    {% endif %}
+
+                    {% set other_changes =
+                        (patch.content_filtered['new'] | length) +
+                        (patch.content_filtered['gameplay'] | length) +
+                        (patch.content_filtered['fixes'] | length) +
+                        (patch.content_filtered['uncategorized'] | length) %}
+
+                    {% if other_changes > 0 %}
+                        <span class="post-info-text">
+                            <img class="change" src="/static/assets/dot.png" height="16" height="16">
+                            <b>{{ other_changes }}</b> Other
+                        </span>
+                    {% endif %}
+                <br>
+
+                    <span class="post-read-text">READ MORE
+                        <img class="post-read-arrow" src="/static/assets/arrow_right.png">
+                    </span><br>
+                </div>
+            </div>
+            <div class="post-divider"></div>
+        </a>
     {% endfor %}
+    </div>
 </div>
 
+{% include 'footer.html' %}

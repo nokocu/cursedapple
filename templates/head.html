@@ -11,45 +11,58 @@
 <body>
     <div class="top">
         <div class="head">
-            <div class="head-side">
-                <div class="head-side-in appa">
-                    <img src="/static/assets/oc/appa.png">
+            
+                <div class="head-side">
+                    <a href="{{ url_for('home') }}">
+                        <div class="head-side-in appa">
+                            <img src="/static/assets/oc/appa.png">
+                        </div>
+                    </a>
+                    <a href="{{ url_for('home') }}">
+                        <div class="head-side-in cursedapple">
+                            <span class="cursedappletext cursed">cursed</span><span class="cursedappletext">apple</span>
+                        </div>
+                    </a>
+                    <div class="head-side-in">
+                        <a href="https://store.steampowered.com/app/1422450/Deadlock/"><div class="steam"><div class="steamlogo"></div>PLAY DEADLOCK</div></a>
+                    </div>
+                    </a>
                 </div>
-                <div class="head-side-in cursedapple">
-                    <span class="cursedappletext1">cursed</span><span class="cursedappletext2">apple</span>
-                </div>
-                <div class="head-side-in">
-                    <a class="nodecor" href="https://store.steampowered.com/app/1422450/Deadlock/"><div class="steam"><div class="steamlogo"></div>PLAY DEADLOCK</div></a>
-                </div>
-            </div>
 
             <div class="head-side">
                 <div class="head-side-in category">
-                    PATCH NOTES
+                    MACRO
                 </div>
                 <div class="head-side-in category">
-                    MACRO SEVEN
-                </div>
-                <div class="head-side-in category">
-                    ITEMS
+                    THE CURIOSITY SHOP
                 </div>
                 <div class="head-side-in category">
                     ABOUT
                 </div>
                 <div class="head-side-in category">
-                    <div class="globelogo"></div>LANGUAGE
+                    <div class="globelogo"></div>REGION
                 </div>
             </div>
 
         </div>
+
         <div class="top-center">
+            {% if patch %}
             <div class="top-center-in">
                 <img src="/static/assets/game/logos/DEADLOCK_Logo.png">
             </div>
             <div class="top-center-in">
-                <span class="centertext">Deadlock Update 8/11/2024</span>
+                <span class="centertext">{{ patch.date | titledate }}</span>
             </div>
-
+            {% else %}
+            <div class="top-center-in">
+                <img src="/static/assets/game/logos/DEADLOCK_Logo.png">
+            </div>
+            <div class="top-center-in">
+                <span class="centertext">Welcome to cursedapple</span>
+            </div>
+            {% endif %}
         </div>
+
 
     </div>

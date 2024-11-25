@@ -2,23 +2,27 @@
 {% include 'head.html' %}
 <div class="tabs">
     <div class="alltabs">
-        <a class="tab ajax-link" href="{{ url_for('patchlist') }}">
+        <a class="tab ajax-link" href="{{ url_for('home') }}">
             ALL UPDATES
         </a>
         <a class="tab-on">
-            PATCH NOTES
+            {% if patch.id == newest.id %}
+                NEWEST
+            {% else %}
+                {{ patch.date | titledate }}
+            {% endif %}
         </a>
     </div>
 </div>
 
 
 <div class="mid">
-    {% for patch in patches %}
+
     <div class="content-container">
 
         <div class="titles">
-            <span class="datetext">{{ patch.timestamp }}</span><br>
-            <span class="titletext">Deadlock Update {{ patch.timestamp }}</span><br>
+            <span class="datetext"><a href="{{ patch.link }}">Posted {{ patch.timestamp | datetime_eu }}</a></span><br>
+            <span class="titletext">Deadlock Update - {{ patch.date | titledate }}</span><br>
         </div>
         <br>
 
@@ -29,26 +33,39 @@
                         <div class="pic-hero">
                             <img src="/static/assets/game/portraits/{{ hero }}/{{ hero }}_vertical_psd.png">
                             <img src="/static/assets/oc/fade.png">
+                            <span>{{ hero | upper}}</span>
                         </div>
                         <div class="hero-notes-all">
 
                             {% if patch.content_filtered['heroes'][hero]['buff'] or patch.content_filtered['heroes'][hero]['other'] %}
                                 <div class="hero-notes buffs">
                                     {% for buff in patch.content_filtered['heroes'][hero]['buff'] %}
-                                        <span><img class="change" src="/static/assets/up.png" width="16" height="16"> {{ buff }}</span></br>
+                                        <span><img class="change" src="/static/assets/up.png" width="16" height="16" alt="buff"> {{ buff }}</span></br>
                                     {% endfor %}
                                     {% for other in patch.content_filtered['heroes'][hero]['other'] %}
-                                        <span><img class="change" src="/static/assets/dot.png" height="16" height="16"> {{ other }}</span></br>
+                                        <span><img class="change" src="/static/assets/dot.png" height="16" height="16" alt="change"> {{ other }}</span></br>
                                     {% endfor %}
                                 </div>
+                                {% if patch.content_filtered['heroes'][hero]['nerf'] %} 
+                                    <div class="hero-notes nerfs">
+                                        {% for nerf in patch.content_filtered['heroes'][hero]['nerf'] %}
+                                            <span><img class="change" src="/static/assets/down.png" width="16" height="16" alt="nerf"> {{ nerf }}</span></br>
+                                        {% endfor %}
+                                    </div>
+                                {% else %} 
+                                <div class="hero-notes buffs"></div>
+                                {% endif %}
+
+                            {% elif patch.content_filtered['heroes'][hero]['nerf']  %}
+                                <div class="hero-notes nerfs">
+                                    {% for nerf in patch.content_filtered['heroes'][hero]['nerf'] %}
+                                        <span><img class="change" src="/static/assets/down.png" width="16" height="16" alt="nerf"> {{ nerf }}</span></br>
+                                    {% endfor %}
+                                </div>
+                                <div class="hero-notes nerfs"></div>
                             {% endif %}
 
 
-                                <div class="hero-notes nerfs">
-                                    {% for nerf in patch.content_filtered['heroes'][hero]['nerf'] %}
-                                        <span><img class="change" src="/static/assets/down.png" width="16" height="16"> {{ nerf }}</span></br>
-                                    {% endfor %}
-                                </div>
 
                         </div>
                     </div><br>
@@ -63,15 +80,15 @@
                             <div class="pic-item"><img src="/static/assets/game/icons/weapon/{{ item|lower }}.png"></div>
                             <div class="item-notes">
                                 {% for buff in patch.content_filtered['items']['Weapon'][item]['buff'] %}
-                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16">{{ buff }}</span></br>
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16" alt="buff">{{ buff }}</span></br>
                                 {% endfor %}
 
                                 {% for other in patch.content_filtered['items']['Weapon'][item]['other'] %}
-                                    <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ other }}</span></br>
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" height="16" alt="change">{{ other }}</span></br>
                                 {% endfor %}
 
                                 {% for nerf in patch.content_filtered['items']['Weapon'][item]['nerf'] %}
-                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16">{{ nerf }}</span></br>
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16" alt="nerf">{{ nerf }}</span></br>
                                 {% endfor %}
                             </div>
                         </div>
@@ -133,6 +150,7 @@
         {% if patch.content_filtered['new'] %}
             <div class="other-container">
                 <div class="notes">
+                [ NEW ]<br><br>
                 {% for line in patch.content_filtered['new'] %}
                 <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
                 {% endfor %}
@@ -143,6 +161,7 @@
         {% if patch.content_filtered['gameplay'] %}
             <div class="other-container">
                 <div class="notes">
+                [ GAMEPLAY ]<br><br>
                 {% for line in patch.content_filtered['gameplay'] %}
                 <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
                 {% endfor %}
@@ -153,6 +172,7 @@
         {% if patch.content_filtered['fixes'] %}
             <div class="other-container">
                 <div class="notes">
+                [ FIXES ]<br><br>
                 {% for line in patch.content_filtered['fixes'] %}
                 <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
                 {% endfor %}
@@ -163,16 +183,42 @@
         {% if patch.content_filtered['uncategorized'] %}
             <div class="other-container">
                 <div class="notes">
+                [ OTHER ]<br><br>
                 {% for line in patch.content_filtered['uncategorized'] %}
                 <span><img class="change" src="/static/assets/dot.png" height="16" height="16">{{ line }}</span></br>
                 {% endfor %}
                 </div>
             </div><br>
         {% endif %}
-    </div>
-    {% endfor %}
 
+        {% if patch.content_filtered['gallery'] %}
+        <div class="other-container">
+            [ GALLERY ]<br><br>
+            <div class="gallery-container">
+                <div class="gallery">
+                    {% for image in patch.content_filtered['gallery'] %}
+                        <div class="gallery-item">
+                            <img src="{{ image }}" class="gallery-image">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="gallery-controls">
+                <button class="prev"><</button>
+                <button class="next">></button>
+            </div><br><br>
+            <div class="galleryinfo">
+                Note: For
+                {% if patch.content_filtered['hidden'] and patch.content_filtered['hidden']|length > 0 %}
+                    <b>&nbsp;{{ patch.content_filtered['hidden']|length }} videos&nbsp;</b>and
+                {% endif %}
+                higher quality images see the
+                <a class="contentlink" href="{{ patch.link }}">&nbsp;original forum post&nbsp;</a>
+                while logged in.
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
-<script src="/static/script/script.js"></script>
-</body>
-</html>
+<script src="/static/script/script.js"></script><ewqdsf></ewqdsf>
+{% include 'footer.html' %}
