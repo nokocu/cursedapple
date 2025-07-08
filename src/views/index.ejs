@@ -1,0 +1,67 @@
+<%- include('head') %>
+
+<div class="tabs">
+    <div class="alltabs">
+        <a class="tab-on">
+            ALL UPDATES
+        </a>
+        <a class="tab ajax-link" href="/patchnote/<%= newest.id %>">
+            NEWEST
+        </a>
+    </div>
+</div>
+
+<div class="mid">
+    <div class="allposts-container">
+    <% patches.forEach(function(patch) { %>
+        <a href="/patchnote/<%= patch.id %>">
+            <div class="post">
+                <div class="post-pic">
+                    <img src="/static/assets/thumbs/posta<%= patch.id % 10 %>.png">
+                    <div class="post-pic-lines">
+                        <span class="post-pic-text-a"><%= titlepic_eu(patch.date) %></span>
+                        <span class="post-pic-text-b">UPDATE</span>
+                    </div>
+                </div>
+                <div class="post-notes">
+                    <span class="post-date-text">Posted <%= datetime_us(patch.timestamp) %></span><br>
+                    <span class="post-title-text">Patchnotes for <b><%= titledate(patch.date) %></b></span><br>
+
+                    <% if (patch.content_filtered && patch.content_filtered['[ Heroes ]'] && Object.keys(patch.content_filtered['[ Heroes ]']).length > 0) { %>
+                        <span class="post-info-text">
+                            <img class="change" src="/static/assets/hero2.png" height="16" width="16">
+                            <b><%= Object.keys(patch.content_filtered['[ Heroes ]']).length %></b>
+                            Heroes
+                        </span>
+                    <% } %>
+
+                    <% 
+                    let itemChanges = 0;
+                    if (patch.content_filtered && patch.content_filtered['[ Items ]']) {
+                        itemChanges = Object.keys(patch.content_filtered['[ Items ]']['Weapon'] || {}).length +
+                                     Object.keys(patch.content_filtered['[ Items ]']['Spirit'] || {}).length +
+                                     Object.keys(patch.content_filtered['[ Items ]']['Vitality'] || {}).length;
+                    }
+                    %>
+
+                    <% if (itemChanges > 0) { %>
+                         <span class="post-info-text">
+                             <img class="change" src="/static/assets/item.png" height="16" width="16">
+                             <b><%= itemChanges %></b> Items
+                         </span>
+                    <% } %>
+                <br>
+
+                    <span class="post-read-text">READ MORE
+                        <img class="post-read-arrow" src="/static/assets/arrow_right.png">
+                    </span><br>
+                </div>
+            </div>
+            <div class="post-divider"></div>
+        </a>
+    <% }); %>
+    </div>
+</div>
+
+<script type="module" src="/static/js/app.js"></script>
+<%- include('footer') %>

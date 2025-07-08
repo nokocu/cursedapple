@@ -1,7 +1,17 @@
+# dependencies
+node_modules/
+npm-debug.log*
+
+# build outputs
+public/static/js/
+*.js.map
+
+# the rest
 venv/
 __pycache__/
 *.pyc
 .idea/
-pulpit/
-test.py
-test.html
+.vscode/
+misc/
+*.tsbuildinfo
+

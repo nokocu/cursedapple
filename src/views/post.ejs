@@ -1,0 +1,207 @@
+<%- include('head') %>
+<div class="tabs">
+    <div class="alltabs">
+        <a class="tab ajax-link" href="/">
+            ALL UPDATES
+        </a>
+        <a class="tab-on">
+            <% if (patch.id == newest.id) { %>
+                NEWEST
+            <% } else { %>
+                <%= titledate(patch.date) %>
+            <% } %>
+        </a>
+    </div>
+</div>
+
+<div class="mid">
+    <div class="content-container">
+        <div class="titles">
+            <span class="datetext"><a href="<%= patch.link || '#' %>">Posted <%= datetime_eu(patch.timestamp) %></a></span><br>
+            <span class="titletext">Deadlock Update - <%= titledate(patch.date) %></span><br>
+        </div>
+        <br>
+
+        <% if (patch.content_filtered && patch.content_filtered['[ Heroes ]']) { %>
+            <% Object.keys(patch.content_filtered['[ Heroes ]']).forEach(function(hero) { %>
+                <% const heroData = patch.content_filtered['[ Heroes ]'][hero]; %>
+                <% if (heroData['buff'].length > 0 || heroData['nerf'].length > 0 || heroData['other'].length > 0) { %>
+                    <% const heroLastWord = hero.split(' ').pop().toLowerCase().replace('&', 'and'); %>
+                    <div class="hero-container" style="border-left: 2px solid var(--<%= heroLastWord %>);">
+                        <div class="pic-hero">
+                            <img src="/static/assets/img/<%= hero %>.png">
+                            <img src="/static/assets/oc/fade.png">
+                            <span><%= hero.toUpperCase() %></span>
+                        </div>
+                        <div class="hero-notes-all">
+                            <% if (heroData['buff'].length > 0 || heroData['other'].length > 0) { %>
+                                <div class="hero-notes buffs">
+                                    <% heroData['buff'].forEach(function(buff) { %>
+                                        <span><img class="change" src="/static/assets/up.png" width="16" height="16" alt="buff"> <%= buff %></span><br>
+                                    <% }); %>
+                                    <% heroData['other'].forEach(function(other) { %>
+                                        <span><img class="change" src="/static/assets/dot.png" height="16" width="16" alt="change"> <%= other %></span><br>
+                                    <% }); %>
+                                </div>
+                                <% if (heroData['nerf'].length > 0) { %>
+                                    <div class="hero-notes nerfs">
+                                        <% heroData['nerf'].forEach(function(nerf) { %>
+                                            <span><img class="change" src="/static/assets/down.png" width="16" height="16" alt="nerf"> <%= nerf %></span><br>
+                                        <% }); %>
+                                    </div>
+                                <% } else { %>
+                                    <div class="hero-notes buffs"></div>
+                                <% } %>
+                            <% } else if (heroData['nerf'].length > 0) { %>
+                                <div class="hero-notes nerfs">
+                                    <% heroData['nerf'].forEach(function(nerf) { %>
+                                        <span><img class="change" src="/static/assets/down.png" width="16" height="16" alt="nerf"> <%= nerf %></span><br>
+                                    <% }); %>
+                                </div>
+                                <div class="hero-notes nerfs"></div>
+                            <% } %>
+                        </div>
+                    </div><br>
+                <% } %>
+            <% }); %>
+        <% } %>
+
+        <% if (patch.content_filtered && patch.content_filtered['[ Items ]'] && patch.content_filtered['[ Items ]']['Weapon']) { %>
+            <% const weaponItems = Object.keys(patch.content_filtered['[ Items ]']['Weapon']).filter(item => {
+                const itemData = patch.content_filtered['[ Items ]']['Weapon'][item];
+                return itemData['buff'].length > 0 || itemData['nerf'].length > 0 || itemData['other'].length > 0;
+            }); %>
+            <% if (weaponItems.length > 0) { %>
+                <div class="item-container weapon" id="weapon-div">
+                    <% weaponItems.forEach(function(item) { %>
+                        <% const itemData = patch.content_filtered['[ Items ]']['Weapon'][item]; %>
+                        <div class="item" id="weapon-item">
+                            <div class="pic-item weaponfilter">
+                                <img src="/static/assets/img/<%= item.toLowerCase() %>.png">
+                            </div>
+                            <div class="item-notes">
+                                <% itemData['buff'].forEach(function(buff) { %>
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16" alt="buff"><%= buff %></span><br>
+                                <% }); %>
+                                <% itemData['other'].forEach(function(other) { %>
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" width="16" alt="change"><%= other %></span><br>
+                                <% }); %>
+                                <% itemData['nerf'].forEach(function(nerf) { %>
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16" alt="nerf"><%= nerf %></span><br>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div><br>
+            <% } %>
+        <% } %>
+
+        <% if (patch.content_filtered && patch.content_filtered['[ Items ]'] && patch.content_filtered['[ Items ]']['Spirit']) { %>
+            <% const spiritItems = Object.keys(patch.content_filtered['[ Items ]']['Spirit']).filter(item => {
+                const itemData = patch.content_filtered['[ Items ]']['Spirit'][item];
+                return itemData['buff'].length > 0 || itemData['nerf'].length > 0 || itemData['other'].length > 0;
+            }); %>
+            <% if (spiritItems.length > 0) { %>
+                <div class="item-container spirit">
+                    <% spiritItems.forEach(function(item) { %>
+                        <% const itemData = patch.content_filtered['[ Items ]']['Spirit'][item]; %>
+                        <div class="item">
+                            <div class="pic-item spiritfilter">
+                                <img src="/static/assets/img/<%= item.toLowerCase() %>.png">
+                            </div>
+                            <div class="item-notes">
+                                <% itemData['buff'].forEach(function(buff) { %>
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16"><%= buff %></span><br>
+                                <% }); %>
+                                <% itemData['other'].forEach(function(other) { %>
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" width="16"><%= other %></span><br>
+                                <% }); %>
+                                <% itemData['nerf'].forEach(function(nerf) { %>
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16"><%= nerf %></span><br>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div><br>
+            <% } %>
+        <% } %>
+
+        <% if (patch.content_filtered && patch.content_filtered['[ Items ]'] && patch.content_filtered['[ Items ]']['Vitality']) { %>
+            <% const vitalityItems = Object.keys(patch.content_filtered['[ Items ]']['Vitality']).filter(item => {
+                const itemData = patch.content_filtered['[ Items ]']['Vitality'][item];
+                return itemData['buff'].length > 0 || itemData['nerf'].length > 0 || itemData['other'].length > 0;
+            }); %>
+            <% if (vitalityItems.length > 0) { %>
+                <div class="item-container vitality">
+                    <% vitalityItems.forEach(function(item) { %>
+                        <% const itemData = patch.content_filtered['[ Items ]']['Vitality'][item]; %>
+                        <div class="item">
+                            <div class="pic-item vitalityfilter">
+                                <img src="/static/assets/img/<%= item.toLowerCase() %>.png">
+                            </div>
+                            <div class="item-notes">
+                                <% itemData['buff'].forEach(function(buff) { %>
+                                    <span><img class="change" src="/static/assets/up.png" width="16" height="16"><%= buff %></span><br>
+                                <% }); %>
+                                <% itemData['other'].forEach(function(other) { %>
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" width="16"><%= other %></span><br>
+                                <% }); %>
+                                <% itemData['nerf'].forEach(function(nerf) { %>
+                                    <span><img class="change" src="/static/assets/down.png" width="16" height="16"><%= nerf %></span><br>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div><br>
+            <% } %>
+        <% } %>
+
+        <% if (patch.content_filtered) { %>
+            <% Object.keys(patch.content_filtered).forEach(function(key) { %>
+                <% if (!['[ Items ]', '[ Heroes ]', '[ Hidden ]', '[ Gallery ]'].includes(key)) { %>
+                    <% const value = patch.content_filtered[key]; %>
+                    <% if (Array.isArray(value) && value.length > 0) { %>
+                        <div class="other-container">
+                            <div class="notes">
+                                <%= key %><br><br>
+                                <% value.forEach(function(line) { %>
+                                    <span><img class="change" src="/static/assets/dot.png" height="16" width="16"><%= line %></span><br>
+                                <% }); %>
+                            </div>
+                        </div><br>
+                    <% } %>
+                <% } %>
+            <% }); %>
+        <% } %>
+
+        <% if (patch.content_filtered && patch.content_filtered['[ Gallery ]'] && patch.content_filtered['[ Gallery ]'].length > 0) { %>
+            <div class="other-container">
+                [ Gallery ]<br><br>
+                <div class="gallery-container">
+                    <div class="gallery">
+                        <% patch.content_filtered['[ Gallery ]'].forEach(function(image) { %>
+                            <div class="gallery-item">
+                                <img src="<%= image %>" class="gallery-image">
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <div class="gallery-controls">
+                    <button class="prev"><</button>
+                    <button class="next">></button>
+                </div><br><br>
+                <div class="galleryinfo">
+                    Note: For
+                    <% if (patch.content_filtered['[ Hidden ]'] && patch.content_filtered['[ Hidden ]'].length > 0) { %>
+                        <b>&nbsp;<%= patch.content_filtered['[ Hidden ]'].length %> videos&nbsp;</b>and
+                    <% } %>
+                    higher quality images see the
+                    <a class="contentlink" href="<%= patch.link || '#' %>">&nbsp;original forum post&nbsp;</a>
+                    while logged in.
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+<script type="module" src="/static/js/app.js"></script>
+<%- include('footer') %>

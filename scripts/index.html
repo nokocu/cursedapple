@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deadlock patchnotes tracker</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/modern.css">
+</head>
+<body>
+    <div class="tabs">
+        <div class="alltabs">
+            <a class="tab-on" data-view="patches">all patches</a>
+            <a class="tab" data-view="heroes">heroes</a>
+            <a class="tab" data-view="items">items</a>
+            <a class="tab" data-view="analytics">analytics</a>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="search changes..." class="search-input">
+            <select id="hero-filter" class="filter-select">
+                <option value="">all heroes</option>
+            </select>
+            <select id="item-filter" class="filter-select">
+                <option value="">all items</option>
+            </select>
+            <select id="change-type-filter" class="filter-select">
+                <option value="">all types</option>
+                <option value="buff">buffs</option>
+                <option value="nerf">nerfs</option>
+                <option value="other">other</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mid">
+        <div id="content-container">
+            <div class="loading">loading patches...</div>
+        </div>
+    </div>
+
+    <script src="/static/script/app.js"></script>
+</body>
+</html>

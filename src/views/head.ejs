@@ -13,12 +13,12 @@
         <div class="head">
             
                 <div class="head-side">
-                    <a href="{{ url_for('home') }}">
+                    <a href="/">
                         <div class="head-side-in appa">
                             <img src="/static/assets/oc/appa.png">
                         </div>
                     </a>
-                    <a href="{{ url_for('home') }}">
+                    <a href="/">
                         <div class="head-side-in cursedapple">
                             <span class="cursedappletext cursed">cursed</span><span class="cursedappletext">apple</span>
                         </div>
@@ -47,22 +47,21 @@
         </div>
 
         <div class="top-center">
-            {% if patch %}
+            <% if (typeof patch !== 'undefined' && patch) { %>
             <div class="top-center-in">
                 <img src="/static/assets/game/logos/DEADLOCK_Logo.png">
             </div>
             <div class="top-center-in">
-                <span class="centertext">{{ patch.date | titledate }}</span>
+                <span class="centertext"><%= titledate(patch.date) %></span>
             </div>
-            {% else %}
+            <% } else { %>
             <div class="top-center-in">
                 <img src="/static/assets/game/logos/DEADLOCK_Logo.png">
             </div>
             <div class="top-center-in">
                 <span class="centertext">Welcome to cursedapple</span>
             </div>
-            {% endif %}
+            <% } %>
         </div>
-
 
     </div>
