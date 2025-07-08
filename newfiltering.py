@@ -3,8 +3,8 @@ import json
 import os
 import sqlite3
 import re
+import time
 from pprint import pprint
-
 import requests
 
 # get data ############################################################################################################
@@ -66,33 +66,32 @@ def categorize(line, characters, items, final_structure, force_category=None):
                     line_lower = line_lower.replace(mistyped.lower(), correct)
 
 
-
         # check for "item:" format first
         for category, item_list in items.items():
             for item in item_list:
                 item_lower = item.lower()
                 if f"{item_lower}:" in line_lower:
-                    return "item", category, item  # Return item category and name
+                    return "item", category, item 
 
         # check for "hero:" format second
         for hero in characters:
-            # handle cases like "you are perfection, Haze"
+            # handle exceptions (example:you are perfection, Haze)
             if f'{hero}"' in line.lower() or f'"{hero}' in line.lower():
                 return None
             if f"{hero}:" in line_lower:
-                return "hero", hero  # Return hero name
+                return "hero", hero
 
         # check for general item mentions
         for category, item_list in items.items():
             for item in item_list:
                 item_lower = item.lower()
                 if item_lower in line_lower and not any(ignore_word in line_lower for ignore_word in ignore_words):
-                    return "item", category, item  # Return item category and name
+                    return "item", category, item
 
         # check for general hero mentions
         for hero in characters:
             if hero in line_lower and not any(word in line_lower for word in ignore_words):
-                return "hero", hero  # Return hero name
+                return "hero", hero
 
         # check for hero abilities at the end
         for hero, abilities in char_abilities.items():
@@ -188,7 +187,6 @@ def clear_empty_data(final_structure):
 def notes_to_json(id, conn):
     cursor = conn.cursor()
 
-    # Pobierz wybrany wpis na podstawie ID
     cursor.execute("SELECT content FROM patches WHERE id = ?", (id,))
     content = cursor.fetchone()
 
@@ -212,7 +210,7 @@ def notes_to_json(id, conn):
                 categorize(stripped_line, characters, items, final_structure_copy, force_category="[ Hidden ]")
                 continue
 
-            # Check if its the category
+            # check if its the category
             elif stripped_line.startswith("[") and stripped_line.endswith("]"):
                 last_category = stripped_line
                 continue
@@ -231,7 +229,7 @@ def notes_to_json(id, conn):
                     categorize(chunk, characters, items, final_structure_copy, force_category=last_category_temp)
                 continue
 
-            # Check if line has any image src
+            # check if line has any image src
             elif 'src' in line:
                 src_pattern = r'src="([^"]+)"'
                 src_match = re.search(src_pattern, line)
@@ -240,34 +238,31 @@ def notes_to_json(id, conn):
                     categorize(line, characters, items, final_structure_copy, force_category="[ Gallery ]")
                     continue
 
-            # If line ends with ":", remove it
+            # if line ends with ":", remove it
             elif stripped_line.endswith(":"):
                 stripped_line = stripped_line[:-1]
 
-            # Ignore empty lines
+            # ignore empty lines
             elif stripped_line == "":
                 continue
 
-            # Categorize the line (use last_category or default to "[ OTHER ]")
+            # categorize the line
             last_category_temp = last_category if last_category is not None else "[ General Changes ]"
             categorize(stripped_line, characters, items, final_structure_copy, force_category=last_category_temp)
             last_line = re.sub(r'<.*?>', '', line).strip().replace("- ", "")
 
-        # sort
+        # sort clear and commit
         sorting(final_structure_copy)
-
-        # clear empty data
         clear_empty_data(final_structure_copy)
-
-        # Zaktualizuj wpis w bazie danych
         content_filtered = json.dumps(final_structure_copy)
         cursor.execute("UPDATE patches SET content_filtered = ? WHERE id = ?", (content_filtered, id))
         conn.commit()
 
+
 ########################################################################################################################
 if __name__ == "__main__":
-    start_id = 1  # Starting ID
-    end_id = 100  # Ending ID (adjust as needed)
+    start_id = 1
+    end_id = 100
 
     for current_id in range(start_id, end_id + 1):
         try:

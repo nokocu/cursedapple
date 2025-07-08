@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from patchscrapper import patch_content, insert_patch
 
+
 def scrapper_updater(forums="https://forums.playdeadlock.com/forums/changelog.10/"):
     response = requests.get(forums)
     if response.status_code != 200:

@@ -4,7 +4,7 @@ import sqlite3
 import urllib.parse  # For decoding URL-encoded characters
 import os  # For working with the file system
 
-# Ensure the image directory exists
+# ensure dir exists
 os.makedirs('static/assets/img', exist_ok=True)
 
 
@@ -28,18 +28,18 @@ def save_character(name, ability1, ability2, ability3, ability4, image_url=None)
     conn = sqlite3.connect("patch.db")
     c = conn.cursor()
 
-    # Check if the character already exists
+    # check if the character already exists
     c.execute('SELECT id FROM characters WHERE name = ?', (name,))
     existing_character = c.fetchone()
 
     if existing_character:
-        # Update the image_url if the character exists
+        # update the image_url if the character exists
         c.execute('''UPDATE characters 
                      SET image_url = ? 
                      WHERE name = ?''', (image_url, name))
         print(f"Updated image for {name}")
     else:
-        # Insert a new record if the character doesn't exist
+        # insert a new record if the character doesn't exist
         c.execute('''INSERT INTO characters 
                     (name, ability1, ability2, ability3, ability4, image_url) 
                     VALUES (?, ?, ?, ?, ?, ?)''',
@@ -51,21 +51,22 @@ def save_character(name, ability1, ability2, ability3, ability4, image_url=None)
 
 
 def download_image(image_url, hero_name):
-    # Extract the image's file extension from the URL (assuming .png format for all)
+    # extract the image file extension from the URL
     file_name = f"{hero_name}.png"
     image_path = os.path.join("static", "assets", "img", file_name)
 
     try:
-        # Download the image content
+        # download
         response = requests.get(image_url, stream=True)
 
         if response.status_code == 200:
-            # Save the image to the file path
+            # save the image to the file path
             with open(image_path, 'wb') as f:
                 for chunk in response.iter_content(1024):
                     f.write(chunk)
             print(f"Image saved for {hero_name}")
-            return f"/static/assets/img/{file_name}"  # Save relative path for the database
+            # save relative path for the database
+            return f"/static/assets/img/{file_name}"
         else:
             print(f"Failed to download image for {hero_name}: {image_url}")
             return None
@@ -84,8 +85,8 @@ def scrap_characters():
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Extract character abilities (located in <tbody> elements)
-    tbody_elements = soup.find_all('tbody')[:-2]  # Exclude the last two for images
+    # extract character abilities
+    tbody_elements = soup.find_all('tbody')[:-2]
 
     for tbody in tbody_elements:
         links = tbody.find_all('a', title=True)
@@ -119,38 +120,36 @@ def scrap_images():
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Now we target the last two <tbody> elements
+    # target the last two tbody elements
     tbody_elements = soup.find_all('tbody')[-2:]  # Only the last two tbody elements for images
 
     for tbody in tbody_elements:
-        # Locate all hero cards within this tbody
+        # locate all hero cards
         hero_cards = tbody.find_all('div', class_='HeroCard2')
 
         for hero_card in hero_cards:
-            # Extract the hero's name from the <a> tag's href attribute
+            # extract hero name
             hero_link = hero_card.find('a', href=True)
             if hero_link:
                 hero_name = hero_link['href'].split('/')[-1].lower()  # Extract hero name from the href
 
-                # Decode URL-encoded characters (e.g., '%26' to '&')
+                # decode
                 hero_name = urllib.parse.unquote(hero_name)
 
-                # Replace underscores with spaces
+                # replace underscores with spaces
                 hero_name = hero_name.replace('_', ' ')
 
-                # Extract the image URL from the <img> tag
+                # extract the image URL
                 hero_image_tag = hero_card.find('img', src=True)
                 if hero_image_tag:
                     hero_image_url = "https://deadlocked.wiki/" + hero_image_tag['src']
 
-                    # Download the image
+                    # download and update
                     download_image(hero_image_url, hero_name)
-
-                    # Update the character's record with the image URL and local image path
                     save_character(hero_name, None, None, None, None, hero_image_url)
 
 
 if __name__ == "__main__":
     init_db()
-    scrap_characters()  # Scrape character abilities and save them
-    scrap_images()  # Scrape images and download them
+    scrap_characters()
+    scrap_images()

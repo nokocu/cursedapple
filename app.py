@@ -39,10 +39,10 @@ def init_db():
 init_db()
 
 
-@scheduler.task('interval', id='check_for_patch_job', minutes=1)
+@scheduler.task('interval', id='check_for_patch_job', minutes=3)
 def scheduled_check():
-    # print("[scheduler] Checking for new patches...")
-    # check_for_patch()
+    print("[scheduler] Checking for new patches...")
+    check_for_patch()
     pass
 
 
@@ -64,6 +64,7 @@ def get_patches():
     conn.close()
 
     return patches, newest
+
 
 def get_patch_by_id(patch_id):
     conn = sqlite3.connect(database)
@@ -97,25 +98,30 @@ def notes(id):
         patches = get_patches()
         return render_template('index.html', patches=patches[0], newest=patches[1])
 
+
 # time
 app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 babel = Babel(app)
+
 
 @app.template_filter('datetime_us')
 def format_date_us(value):
     dt = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
     return dt.strftime("%B %d, %Y, %I:%M %p")
 
+
 @app.template_filter('datetime_eu')
 def format_date_eu(value):
     dt = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
     return dt.strftime("%B %d, %Y, %H:%M")
 
+
 @app.template_filter('titledate')
 def format_date_us(value):
     dt = datetime.strptime(value, "%m-%d-%Y")
     return dt.strftime("%B %d, %Y")
+
 
 @app.template_filter('titlepic_eu')
 def format_date_eu(value):

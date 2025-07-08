@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showImage(index) {
-        // Slide the gallery to the left or right
+        // slide the gallery to the left or right
         gallery.style.transform = `translateX(-${index * 100}%)`;
 
-        // Fade in/out images by toggling 'active' class
+        // toggling active class
         galleryItems.forEach((item, i) => {
             if (i === index) {
                 item.classList.add('active');

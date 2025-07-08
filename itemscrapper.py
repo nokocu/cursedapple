@@ -1,12 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
-import os  # For working with the file system
+import os
 
-# Ensure the image directory exists
+# directory
 os.makedirs('static/assets/img', exist_ok=True)
 
-# Function to initialize the database
+
+# initialize the db
 def init_db():
     conn = sqlite3.connect("patch.db")
     c = conn.cursor()
@@ -21,7 +22,8 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Function to save item to the database
+
+# save item to the db
 def save_item(name, category, price, image_url):
     conn = sqlite3.connect("patch.db")
     c = conn.cursor()
@@ -31,22 +33,23 @@ def save_item(name, category, price, image_url):
     conn.commit()
     conn.close()
 
-# Function to download images if they don't exist in the folder
+
+# download images if they dont exist in the folder
 def download_image(image_url, item_name):
-    # Generate the image file name by replacing underscores with spaces and converting to lowercase
+    # generate the image file
     file_name = f"{item_name.replace('_', ' ').lower()}.png"
     image_path = os.path.join("static", "assets", "img", file_name)
 
     try:
-        # Download the image content
+        # download
         response = requests.get(image_url, stream=True)
         if response.status_code == 200:
-            # Save the image to the file path
+            # save
             with open(image_path, 'wb') as f:
                 for chunk in response.iter_content(1024):
                     f.write(chunk)
             print(f"Image saved for {item_name}: {image_path}")
-            return image_url  # Return the original URL
+            return image_url
         else:
             print(f"Failed to download image for {item_name}: {image_url}")
             return None
@@ -54,7 +57,8 @@ def download_image(image_url, item_name):
         print(f"Error downloading image for {item_name}: {e}")
         return None
 
-# Function to scrape items from the website
+
+# function to scrape items from the website
 def scrap_items():
     url = "https://deadlocked.wiki/Item"
     response = requests.get(url)
@@ -93,7 +97,8 @@ def scrap_items():
             except Exception as e:
                 print(f"[ERROR] Failed to process item: {e}")
 
-# Function to check if an item already exists in the database
+
+# check if an item already exists
 def item_exists(name):
     conn = sqlite3.connect("patch.db")
     c = conn.cursor()
@@ -104,10 +109,11 @@ def item_exists(name):
 
     return exists
 
-# Function to add missing items to the database
+
+# add missing items
 def add_missing_items(missing_items):
     for name, details in missing_items.items():
-        if not item_exists(name):  # Check if the missing item is already in the database
+        if not item_exists(name):
             category = details["Category"]
             price = details["Price"]
             image = details["Image"]
@@ -116,7 +122,8 @@ def add_missing_items(missing_items):
         else:
             print(f"[INFO] Missing item '{name}' already exists in the database.")
 
-# Function to scrape images only (without re-downloading already existing ones)
+
+# scrape images only (without redownloading)
 def scrap_images():
     conn = sqlite3.connect("patch.db")
     c = conn.cursor()
@@ -126,20 +133,20 @@ def scrap_images():
 
     for name, image_url in items:
         if image_url:
-            # Download the image and update the image URL in the database
             image_url = download_image(image_url, name)
         else:
             print(f"[ERROR] No image URL found for {name}")
     conn.close()
 
-# Main execution flow
+
+# main
 if __name__ == "__main__":
     init_db()
-    scrap_items()  # Scraping items and saving to DB
+    scrap_items()
     missing_items = {
         "Soul Rebirth": {"Category": "Vitality",
                          "Price": "6,200",
                          "Image": "https://deadlocked.wiki/images/thumb/c/c3/Soul_Rebirth.png/75px-Soul_Rebirth.png"}
     }
     add_missing_items(missing_items)
-    scrap_images()  # optional image scraping
+    scrap_images()
